@@ -23,7 +23,11 @@ paths:
           content:
             application/json: # Reponse is returned in JSON
               schema:
-                $ref: "#/components/schemas/tariffs"
+                allOf:
+                  - $ref: "#/components/schemas/generalResponse"
+                  - properties:
+                      data:
+                        $ref: "#/components/schemas/tariffs"
     post:
       tags: ["tariffs"]
       summary: Create a new tariff category
@@ -31,7 +35,11 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/tariffRequest"
+              allOf:
+                - $ref: "#/components/schemas/generalResponse"
+                - properties:
+                    data:
+                      $ref: "#/components/schemas/tariffs"
         required: true
       responses:
         "200":
@@ -39,7 +47,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/tariffs"
+                allOf:
+                  - $ref: "#/components/schemas/generalResponse"
+                  - properties:
+                      data:
+                        $ref: "#/components/schemas/tariffs"
   "/tarrifs/{id}":
     parameters:
     - name: id # Must be same as the value in the {}.
@@ -60,7 +72,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/tariffs"
+                allOf:
+                  - $ref: "#/components/schemas/generalResponse"
+                  - properties:
+                      data:
+                        $ref: "#/components/schemas/tariffs"
         "404":
           description: Tarrif not found
           content:
@@ -75,7 +91,11 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/tariffs"
+              allOf:
+                - $ref: "#/components/schemas/generalResponse"
+                - properties:
+                    data:
+                      $ref: "#/components/schemas/tariffs"
         required: false
       responses:
         "200":
@@ -110,31 +130,48 @@ paths:
               type: object
               properties: {}
 
-  "/posts":
-    get:
-      tags: ["posts"]
-      summary: Returns all posts.
-      responses:
-        "200": # 200 Status Code
-          description: All went well
-          content:
-            application/json: # Reponse is returned in JSON
-              schema:
-                $ref: "#/components/schemas/post"
-    post:
-      tags: ["posts"]
-      summary: Create a new post
-      responses:
-        "200":
-          description: A post was created
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/post"
+#   "/posts":
+#     get:
+#       tags: ["posts"]
+#       summary: Returns all posts.
+#       responses:
+#         "200": # 200 Status Code
+#           description: All went well
+#           content:
+#             application/json: # Reponse is returned in JSON
+#               schema:
+#                 $ref: "#/components/schemas/post"
+#     post:
+#       tags: ["posts"]
+#       summary: Create a new post
+#       responses:
+#         "200":
+#           description: A post was created
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: "#/components/schemas/post"
    
       
 components:
   schemas:
+    generalResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Indicates whether the action performed was successful or not
+        message:
+          type: string
+          description: Message returned from the server
+        data:
+          type: object
+          description: Data returned by the operation
+          # Use anyOf to allow various schemas to be used here
+          anyOf:
+            - $ref: '#/components/schemas/tariffs'
+            - $ref: '#/components/schemas/post'
+            # Add more schemas as needed
     post:
       type: object
       properties:
