@@ -16,10 +16,17 @@ paths:
   "/tariffs":
     get:
       tags: ["Get all tariffs"]
-      summary: Returns all tariffs belonging to a provider.
+      summary: Returns all tariffs belonging to a provider. If relevant request body is included the request paramaters would be used in filtering responses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/tariffFilterParams"
+        required: false
+      # frequency, categoryStatus, amount, amountOperator
       responses:
         "200": # 200 Status Code
-          description: All went well
+          description: All went well. Array of data with pagination links
           content:
             application/json: # Reponse is returned in JSON
               schema:
@@ -35,11 +42,7 @@ paths:
         content:
           application/json:
             schema:
-              allOf:
-                - $ref: "#/components/schemas/generalResponse"
-                - properties:
-                    data:
-                      $ref: "#/components/schemas/tariffs"
+              $ref: "#/components/schemas/tariffRequest"
         required: true
       responses:
         "200":
@@ -223,3 +226,21 @@ components:
         provider_id:
           type: number
           description: ID of the provider who created the category
+    tariffFilterParams: #frequency, categoryStatus, amount, amountOperator
+      type: object
+      properties: 
+        name:
+          type: string
+          description: name of tarrif category e.g Duplex, bungalow etc
+        amount:
+          type: number
+          description: Amount to be paid for this category
+        frequency:
+          type: number
+          description: Billing cycle of how often the category should be billed.Id is from the billing cycle table
+        categoryStatus:
+          type: number
+          description: Active or inactive
+        amountOperator:
+          type: number
+          description: greater than, less than, equal to etc
