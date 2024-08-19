@@ -15,7 +15,7 @@ servers:
 paths:
   "/tariffs":
     get:
-      tags: ["tarrifs"]
+      tags: ["Get all tariffs"]
       summary: Returns all tariffs belonging to a provider.
       responses:
         "200": # 200 Status Code
@@ -29,7 +29,7 @@ paths:
                       data:
                         $ref: "#/components/schemas/tariffs"
     post:
-      tags: ["tariffs"]
+      tags: ["Create a new tariff"]
       summary: Create a new tariff category
       requestBody:
         content:
@@ -64,7 +64,7 @@ paths:
         # In this case, it is just a number
         type: number
     get:
-      tags: ["tariff"]
+      tags: ["Get a tariff"]
       summary: Get a single tariff category
       responses:
         "200":
@@ -85,7 +85,7 @@ paths:
                 type: object
                 properties: {}
     put:
-      tags: ["tariff"]
+      tags: ["Update a tariff"]
       summary: Update a tariff category
       requestBody:
         content:
@@ -112,7 +112,7 @@ paths:
                 type: object
                 properties: {}
     delete:
-      tags: ["tariff"]
+      tags: ["Delete a tariff"]
       summary: Delete a tariff category
       responses:
         "200":
