@@ -5,12 +5,12 @@ info:
   version: 0.1.0
   
 externalDocs:
-  description: "JSONPlaceholder's guide"
+  description: "Waste bill Api guide"
   url: https://wastebill.com/api-guide
   
 servers:
-- url: https://jsonplaceholder.typicode.com
-  description: JSONPlaceholder
+- url: https://wastebill-api-mock.server
+  description: Waste bill api Mock server
   
 paths:
   "/tariffs":
