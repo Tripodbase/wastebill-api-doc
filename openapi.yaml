@@ -1,0 +1,188 @@
+openapi: 3.0.3
+info:
+  title: Waste Bill Api Guide
+  description: Waste bill API documentation.
+  version: 0.1.0
+  
+externalDocs:
+  description: "JSONPlaceholder's guide"
+  url: https://wastebill.com/api-guide
+  
+servers:
+- url: https://jsonplaceholder.typicode.com
+  description: JSONPlaceholder
+  
+paths:
+  "/tariffs":
+    get:
+      tags: ["tarrifs"]
+      summary: Returns all tariffs belonging to a provider.
+      responses:
+        "200": # 200 Status Code
+          description: All went well
+          content:
+            application/json: # Reponse is returned in JSON
+              schema:
+                $ref: "#/components/schemas/tariffs"
+    post:
+      tags: ["tariffs"]
+      summary: Create a new tariff category
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/tariffRequest"
+        required: true
+      responses:
+        "200":
+          description: A tariff category was created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/tariffs"
+  "/tarrifs/{id}":
+    parameters:
+    - name: id # Must be same as the value in the {}.
+      in: path # Values could be query,cookie, header or path
+      description: ID of the tariff Category
+      # Since this is in the path, the parameter HAS to be required
+      required: true
+      # Defining the type of the parameter
+      schema:
+        # In this case, it is just a number
+        type: number
+    get:
+      tags: ["tariff"]
+      summary: Get a single tariff category
+      responses:
+        "200":
+          description: All went well
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/tariffs"
+        "404":
+          description: Tarrif not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+    put:
+      tags: ["tariff"]
+      summary: Update a tariff category
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/tariffs"
+        required: false
+      responses:
+        "200":
+          description: All went well
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/post"
+        "404":
+          description: Tariff category not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+  delete:
+    tags: ["tariff"]
+    summary: Delete a tariff category
+    responses:
+      "200":
+        description: All went well
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+      "404":
+        description: Tariff category not found
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+
+  "/posts":
+    get:
+      tags: ["posts"]
+      summary: Returns all posts.
+      responses:
+        "200": # 200 Status Code
+          description: All went well
+          content:
+            application/json: # Reponse is returned in JSON
+              schema:
+                $ref: "#/components/schemas/post"
+    post:
+      tags: ["posts"]
+      summary: Create a new post
+      responses:
+        "200":
+          description: A post was created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/post"
+   
+      
+components:
+  schemas:
+    post:
+      type: object
+      properties:
+        id:
+          type: number
+          description: ID of the post
+        title:
+          type: string
+          description: Title of the post
+        body:
+          type: string
+          description: Body of the post
+        userId:
+          type: number
+          description: ID of the user who created the post
+    tariffRequest:
+      type: object
+      properties: 
+        name:
+          type: string
+          description: name of tarrif category e.g Duplex, bungalow etc
+        amount:
+          type: number
+          description: Amount to be paid for this category
+        frequency:
+          type: number
+          description: Billing cycle of how often the category should be billed.Id is from the billing cycle table
+        provdier:
+          type: number
+          description: ID of the provider who created the category
+    tariffs:
+      type: object
+      properties:
+        id:
+          type: number
+          description: ID of the tariff category
+        name:
+          type: string
+          description: name of tarrif category e.g Duplex, bungalow etc
+        active:
+          type: number
+          description: is this category active or not
+        rate:
+          type: number
+          description: Amount to be paid for this category
+        billing_cycle_id:
+          type: number
+          description: Billing cycle of how often the category should be billed.Id is from the billing cycle table
+        provider_id:
+          type: number
+          description: ID of the provider who created the category
