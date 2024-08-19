@@ -111,24 +111,24 @@ paths:
               schema:
                 type: object
                 properties: {}
-  delete:
-    tags: ["tariff"]
-    summary: Delete a tariff category
-    responses:
-      "200":
-        description: All went well
-        content:
-          application/json:
-            schema:
-              type: object
-              properties: {}
-      "404":
-        description: Tariff category not found
-        content:
-          application/json:
-            schema:
-              type: object
-              properties: {}
+    delete:
+      tags: ["tariff"]
+      summary: Delete a tariff category
+      responses:
+        "200":
+          description: All went well
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+        "404":
+          description: Tariff category not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
 
 #   "/posts":
 #     get:
