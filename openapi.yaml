@@ -132,6 +132,124 @@ paths:
               schema:
                 type: object
                 properties: {}
+  "/service-locations":
+    get:
+      tags: ["Get all service locations"]
+      summary: Returns all servicelocations belonging to a provider. If relevant request body is included the request paramaters would be used in filtering responses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/serviceLocationFilterParams"
+        required: false
+      responses:
+        "200": # 200 Status Code
+          description: All went well. Array of data with pagination links
+          content:
+            application/json: # Reponse is returned in JSON
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/generalResponse"
+                  - properties:
+                      data:
+                        $ref: "#/components/schemas/serviceLocations"
+    post:
+      tags: ["Create a new service Location"]
+      summary: Create a new service location
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/serviceLocationsRequest"
+        required: true
+      responses:
+        "200":
+          description: A new service location was created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/generalResponse"
+                  - properties:
+                      data:
+                        $ref: "#/components/schemas/serviceLocations"
+  "/service-locations/{id}":
+    parameters:
+    - name: id # Must be same as the value in the {}.
+      in: path # Values could be query,cookie, header or path
+      description: ID of the tariff Category
+      # Since this is in the path, the parameter HAS to be required
+      required: true
+      # Defining the type of the parameter
+      schema:
+        # In this case, it is just a number
+        type: number
+    get:
+      tags: ["Get a service location"]
+      summary: Get a single service location
+      responses:
+        "200":
+          description: All went well
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/generalResponse"
+                  - properties:
+                      data:
+                        $ref: "#/components/schemas/serviceLocations"
+        "404":
+          description: Service location not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+    put:
+      tags: ["Update a service location"]
+      summary: Update a service location
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/generalResponse"
+                - properties:
+                    data:
+                      $ref: "#/components/schemas/serviceLocations"
+        required: false
+      responses:
+        "200":
+          description: All went well
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/serviceLocations"
+        "404":
+          description: Service location not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+    delete:
+      tags: ["Delete a Service location"]
+      summary: Delete a service location
+      responses:
+        "200":
+          description: All went well
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+        "404":
+          description: Service location not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
 
 #   "/posts":
 #     get:
@@ -174,6 +292,7 @@ components:
           anyOf:
             - $ref: '#/components/schemas/tariffs'
             - $ref: '#/components/schemas/post'
+            - $ref: '#/components/schemas/serviceLocations'
             # Add more schemas as needed
     post:
       type: object
@@ -244,3 +363,57 @@ components:
         amountOperator:
           type: number
           description: greater than, less than, equal to etc
+    serviceLocationsRequest:
+      type: object
+      properties: 
+        addressLine1:
+          type: string
+          description: service location stree
+        addressLine2:
+          type: string
+          description: Service location Area
+        city:
+          type: string
+          description: Service location city or town
+        state:
+          type: string
+          description: Service location State
+        active:
+          type: number
+          description: is service location active or not 1 = active 0 = disabled. Default is 1
+    serviceLocations:
+      type: object
+      properties:
+        id:
+          type: number
+          description: ID of the service location
+        service_street:
+          type: string
+          description: street name
+        active:
+          type: number
+          description: is the location active or not
+        service_area:
+          type: string
+          description: service location area
+        service_city:
+          type: string
+          description: service location city or town
+        service_state:
+          type: string
+          description: service location state          
+    serviceLocationFilterParams: 
+      type: object
+      properties: 
+        street:
+          type: string
+          description: service location street
+        city:
+          type: string
+          description: service location city
+        state:
+          type: string
+          description: service location state  
+        categoryStatus:
+          type: number
+          description: Active or inactive
