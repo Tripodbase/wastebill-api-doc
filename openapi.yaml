@@ -13,6 +13,102 @@ servers:
   description: Waste bill api Mock server
   
 paths:
+  "/login":
+     post:
+      tags: ["Login: Authentication"]
+      summary: Logs in a user with verified credentials
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                emailAddress:
+                  type: string
+                  description: Email address
+                password:
+                  type: string
+                  description: Password
+        required: true
+      # frequency, categoryStatus, amount, amountOperator
+      responses:
+        "200": # 200 Status Code
+          description: All went well. Array of data with pagination links
+          content:
+            application/json: # Reponse is returned in JSON
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                    description: Access token
+                  token_type:
+                    type: string
+                    description: Bearer
+                  success:
+                    type: bool
+                    description: Success status               
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid credentials"
+  "/register":
+    post:
+      tags:
+        - Authentication
+      summary: User registration
+      description: Register a new user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  description: first  name 
+                lastName:
+                  type: string
+                  description: last name 
+                companyName:
+                  type: string
+                  description: company name 
+                emailAddress:
+                  type: string
+                  description: email address 
+                password:
+                  type: string
+                  description: password 
+      responses:
+        '201':
+          description: Successful registration
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                    description: Access token
+                  token_type:
+                    type: string
+                    description: Bearer
+                  success:
+                    type: bool
+                    description: Success status  
+                  data:
+                    type: string
+                    description: Data of the user who made the registration
+        '400':
+          description: Validation error                        
+
   "/tariffs":
     get:
       tags: ["Get all tariffs"]
@@ -177,7 +273,7 @@ paths:
     parameters:
     - name: id # Must be same as the value in the {}.
       in: path # Values could be query,cookie, header or path
-      description: ID of the tariff Category
+      description: ID of the Service location
       # Since this is in the path, the parameter HAS to be required
       required: true
       # Defining the type of the parameter
@@ -250,6 +346,88 @@ paths:
               schema:
                 type: object
                 properties: {}
+  "/providers":
+    post:
+      tags: ["Create a new Provider"]
+      summary: Create a new Provider
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/providersRequest"
+        required: true
+      responses:
+        "200":
+          description: A new Provider was created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/generalResponse"
+                  - properties:
+                      data:
+                        $ref: "#/components/schemas/providers"
+                        
+  "/providers/{id}":
+    parameters:
+    - name: id # Must be same as the value in the {}.
+      in: path # Values could be query,cookie, header or path
+      description: ID of the provider
+      # Since this is in the path, the parameter HAS to be required
+      required: true
+      # Defining the type of the parameter
+      schema:
+        # In this case, it is just a number
+        type: number
+    get:
+      tags: ["Get a provider"]
+      summary: Get a single Provider
+      responses:
+        "200":
+          description: All went well
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/generalResponse"
+                  - properties:
+                      data:
+                        $ref: "#/components/schemas/providers"
+        "404":
+          description: Provider not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+    put:
+      tags: ["Update a service location"]
+      summary: Update a Provider
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/generalResponse"
+                - properties:
+                    data:
+                      $ref: "#/components/schemas/providers"
+        required: false
+      responses:
+        "200":
+          description: All went well
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/providers"
+        "404":
+          description: Provider not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}                      
+
 
 #   "/posts":
 #     get:
@@ -417,3 +595,84 @@ components:
         categoryStatus:
           type: number
           description: Active or inactive
+    providersRequest:
+      type: object
+      properties: 
+        companyName:
+          type: string
+          description: Company or provider name
+        companyLogo:
+          type: string
+          description: file location
+        companyEmailAddress:
+          type: string
+          description: Company email address
+        companyPhoneNumber:
+          type: string
+          description: Company Phone number
+        companyContactEmailAddress:
+          type: number
+          description: Compnay contact email address
+        companyContactWhatsappNumber:
+          type: string
+          description: Company contact whatsapp number
+        companyContactPhoneNumber:
+          type: string
+          description: Company contact phone  number
+        companyAlternateContactPhoneNumber:
+          type: string
+          description: Company alternative contact phone  number
+        companyAddressLine1:
+          type: string
+          description: Company address line 1
+        companyAddressLine2:
+          type: number
+          description: Company address line 2
+        companyCity:
+          type: string
+          description: Company city
+        companyState:
+          type: number
+          description: Company state
+    providers:
+      type: object
+      properties: 
+        id:
+          type: number
+          description: ID of the provider
+        provider_name:
+          type: string
+          description: Company or provider name
+        logo_url:
+          type: string
+          description: file location
+        email:
+          type: string
+          description: Company email address
+        phone:
+          type: string
+          description: Company Phone number
+        contact_email:
+          type: number
+          description: Compnay contact email address
+        contact_whatsapp:
+          type: string
+          description: Company contact whatsapp number
+        contact_phone:
+          type: string
+          description: Company contact phone  number
+        contact_alt_phone:
+          type: string
+          description: Company alternative contact phone  number
+        address_1:
+          type: string
+          description: Company address line 1
+        address_2:
+          type: number
+          description: Company address line 2
+        city:
+          type: string
+          description: Company city
+        state:
+          type: number
+          description: Company state
