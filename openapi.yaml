@@ -133,7 +133,7 @@ paths:
                         $ref: "#/components/schemas/tariffs"
     post:
       tags: ["Create a new tariff"]
-      summary: Create a new tariff category
+      summary: Create a new tariff category 
       requestBody:
         content:
           application/json:
@@ -451,7 +451,127 @@ paths:
 #               schema:
 #                 $ref: "#/components/schemas/post"
    
-      
+  
+  "/properties":
+    get:
+      tags: ["Get all properties"]
+      summary: Returns all properties belonging to the provider of the logged-in user. If relevant request body is included the request paramaters would be used in filtering responses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/propertyFilterParams"
+        required: false
+      # frequency, categoryStatus, amount, amountOperator
+      responses:
+        "200": # 200 Status Code
+          description: All went well. Array of data with pagination links
+          content:
+            application/json: # Reponse is returned in JSON
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/generalResponse"
+                  - properties:
+                      data:
+                        $ref: "#/components/schemas/properties"
+    post:
+      tags: ["Create a new property"]
+      summary: Create a new Property
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/propertyRequest"
+        required: true
+      responses:
+        "200":
+          description: Property saved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/generalResponse"
+                  - properties:
+                      data:
+                        $ref: "#/components/schemas/properties"
+  "/properties/{id}":
+    parameters:
+    - name: id # Must be same as the value in the {}.
+      in: path # Values could be query,cookie, header or path
+      description: ID of the property
+      # Since this is in the path, the parameter HAS to be required
+      required: true
+      # Defining the type of the parameter
+      schema:
+        # In this case, it is just a number
+        type: number
+    get:
+      tags: ["Get a property"]
+      summary: Get a single property
+      responses:
+        "200":
+          description: All went well.It also loads all asscoiated service location, occupant and propertyBillsetting models
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/generalResponse"
+                  - properties:
+                      data:
+                        $ref: "#/components/schemas/properties"
+        "404":
+          description: Property not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+    put:
+      tags: ["Update a property"]
+      summary: Update a property
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/generalResponse"
+                - properties:
+                    data:
+                      $ref: "#/components/schemas/properties"
+        required: false
+      responses:
+        "200":
+          description: All went well
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/properties"
+        "404":
+          description: Property not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+    delete:
+      tags: ["Delete a property"]
+      summary: Delete a property
+      responses:
+        "200":
+          description: All went well
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+        "404":
+          description: Property not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+  
 components:
   schemas:
     generalResponse:
@@ -471,6 +591,7 @@ components:
             - $ref: '#/components/schemas/tariffs'
             - $ref: '#/components/schemas/post'
             - $ref: '#/components/schemas/serviceLocations'
+            - $ref: '#/components/schemas/properties'
             # Add more schemas as needed
     post:
       type: object
@@ -499,9 +620,6 @@ components:
         frequency:
           type: number
           description: Billing cycle of how often the category should be billed.Id is from the billing cycle table
-        provdier:
-          type: number
-          description: ID of the provider who created the category
     tariffs:
       type: object
       properties:
@@ -676,3 +794,95 @@ components:
         state:
           type: number
           description: Company state
+          #Properties
+    propertyRequest:
+      type: object
+      properties:
+        code:
+          type: string
+          nullable: true
+          description: Property code usually provided by the provider
+        isBusiness:
+          type: boolean
+          description: Is it a business-true or false
+        location:
+          type: number
+          description: service location of property
+        category:
+          type: number
+          description: tariff category id
+        units:
+          type: number
+          description: how many units
+        billing_code:
+          type: string
+          description: System generated code to identify a property
+        house_no:
+          type: string
+          description: House number
+        occupantPhone:
+          type: number
+          nullable: true
+          description: Occupant phone number
+        occupantTitle:
+          type: string
+          nullable: true
+          description: Occpant title
+        occupantName:
+          type: string
+          nullable: true
+          description: Occupant name
+        occupantEmail:
+          type: string
+          nullable: true
+          description: Occupant Email
+        occupantAlternativePhone:
+          type: number
+          nullable: true
+          description: occupant alternative phone
+        occupantAlternativeEmail:
+          type: string
+          nullable: true
+          description: occupant alternative email
+    properties:
+      type: object
+      properties:
+        id:
+          type: number
+          description: ID of the property
+        service_location_id:
+          type: number
+          description: service location of property
+        tariff_category_id:
+          type: number
+          description: tariff category id
+        units:
+          type: number
+          description: how many units
+        code:
+          type: string
+          description: Property code usually provided by the provider
+        billing_code:
+          type: string
+          description: System generated code to identify a property
+        house_no:
+          type: string
+          description: House number
+        provider_id:
+          type: number
+          description: ID of the provider who created the property
+    propertyFilterParams: #frequency, categoryStatus, amount, amountOperator
+      type: object
+      properties: 
+        name:
+          type: string
+          description: Occupant name
+        billingStatus:
+          type: string
+          description: bill_status
+        serviceLocation:
+          type: number
+          description: service location id
+        tariffCategory:
+          type: number
+          description: tariff category
