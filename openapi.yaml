@@ -193,7 +193,7 @@ paths:
                     type: string
                     description: failure status message
   "/email/verify/{id}/{hash}":
-    post:
+    get:
       tags:
         - Authentication
       summary: Verify user email
