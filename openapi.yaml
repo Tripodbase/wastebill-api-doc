@@ -193,7 +193,7 @@ paths:
                     type: string
                     description: failure status message
   "/email/verify/{id}/{hash}":
-    get:
+    post:
       tags:
         - Authentication
       summary: Verify user email
@@ -557,6 +557,28 @@ paths:
                   - properties:
                       data:
                         $ref: "#/components/schemas/providers"
+  "/businesses":
+    post:
+      tags: ["Create a new business(Provider)"]
+      summary: Create a new business(Provider from a logged in user)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/businessRequest"
+        required: true
+      responses:
+        "200":
+          description: A new Provider was created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/generalResponse"
+                  - properties:
+                      data:
+                        $ref: "#/components/schemas/providers"
+                        
                         
   "/providers/{id}":
     parameters:
@@ -616,7 +638,42 @@ paths:
             application/json:
               schema:
                 type: object
-                properties: {}                      
+                properties: {}  
+                        
+                        
+  "/providers/user/{id}":
+    parameters:
+    - name: id # Must be same as the value in the {}.
+      in: path # Values could be query,cookie, header or path
+      description: ID of the user
+      # Since this is in the path, the parameter HAS to be required
+      required: true
+      # Defining the type of the parameter
+      schema:
+        # In this case, it is just a number
+        type: number
+    get:
+      tags: ["Get all providers associated with a user"]
+      summary: Get an array of providers associated with a user
+      responses:
+        "200":
+          description: All went well, returns 
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/generalResponse"
+                  - properties:
+                      data:
+                        $ref: "#/components/schemas/providers"
+        "404":
+          description: Provider not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}                     
+                    
 
 
 #   "/posts":
@@ -934,6 +991,30 @@ components:
           type: string
           description: Company address line 1
         companyAddressLine2:
+          type: number
+          description: Company address line 2
+        companyCity:
+          type: string
+          description: Company city
+        companyState:
+          type: number
+          description: Company state
+    businessRequest:
+      type: object
+      properties: 
+        companyName:
+          type: string
+          description: Company or provider name
+        companyEmail:
+          type: string
+          description: Company email address
+        companyPhone:
+          type: string
+          description: Company Phone number
+        companyAddress:
+          type: string
+          description: Company address line 1
+        companyArea:
           type: number
           description: Company address line 2
         companyCity:
