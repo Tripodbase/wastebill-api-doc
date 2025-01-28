@@ -612,19 +612,15 @@ paths:
               schema:
                 type: object
                 properties: {}
-    put:
-      tags: ["Update a service location"]
+    post:
+      tags: ["Update a Provider"]
       summary: Update a Provider
       requestBody:
         content:
-          application/json:
+          multipart/form-data:
             schema:
-              allOf:
-                - $ref: "#/components/schemas/generalResponse"
-                - properties:
-                    data:
-                      $ref: "#/components/schemas/providers"
-        required: false
+              $ref: "#/components/schemas/providersRequest"
+        required: true
       responses:
         "200":
           description: All went well
