@@ -635,7 +635,7 @@ paths:
               schema:
                 type: object
                 properties: {}  
-                        
+                    
                         
   "/providers/user/{id}":
     parameters:
@@ -662,6 +662,36 @@ paths:
                   - properties:
                       data:
                         $ref: "#/components/schemas/providers"
+        "404":
+          description: Provider not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}                     
+                                                              
+                        
+  "/providers/switch/{id}":
+    parameters:
+    - name: id # Must be same as the value in the {}.
+      in: path # Values could be query,cookie, header or path
+      description: ID of the provider being switched to
+      # Since this is in the path, the parameter HAS to be required
+      required: true
+      # Defining the type of the parameter
+      schema:
+        # In this case, it is just a number
+        type: number
+    put:
+      tags: ["Switch Provider"]
+      summary: Switch a provider
+      responses:
+        "200":
+          description: All went well
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/userProviders"
         "404":
           description: Provider not found
           content:
@@ -1139,6 +1169,24 @@ components:
         provider_id:
           type: number
           description: ID of the provider who created the property
+    userProviders:
+      type: object
+      properties: 
+        id:
+          type: number
+          description: ID of the user provider record
+        user_id:
+          type: number
+          description: user making the request
+        provider_id:
+          type: number
+          description: id of the provider swicthed to
+        active:
+          type: boolean
+          description: active provider the user is currenly associated with
+        created_by:
+          type: number
+          description: user id of the creator of the record
     propertyFilterParams: #frequency, categoryStatus, amount, amountOperator
       type: object
       properties: 
