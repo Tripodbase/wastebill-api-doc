@@ -964,7 +964,8 @@ components:
           description: Company or provider name
         companyLogo:
           type: string
-          description: file location
+          format: binary
+          description: Company logo file (image)
         companyEmailAddress:
           type: string
           description: Company email address
